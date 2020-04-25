@@ -1,9 +1,6 @@
 import React from 'react';
 import {
     Badge,
-    Nav,
-    NavItem,
-    Button
 } from 'reactstrap';
 
 const Gnb = (props) => {

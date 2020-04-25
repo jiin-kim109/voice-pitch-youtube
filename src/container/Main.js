@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Gnb from '../components/Gnb';
+import Monitor from '../components/Monitor';
 
 class Main extends Component{
     render(){
@@ -11,7 +12,7 @@ class Main extends Component{
                         <p>aaa</p>
                     </div>
                     <div className="cell">
-                        <p>aaa</p>
+                        <Monitor />
                     </div>
                 </div>
             </div>
