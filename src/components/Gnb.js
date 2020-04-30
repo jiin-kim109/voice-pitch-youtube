@@ -1,13 +1,21 @@
 import React from 'react';
 import {
-    Badge,
+    Navbar,
+    NavbarBrand,
+    NavbarText,
 } from 'reactstrap';
 
 const Gnb = (props) => {
     return(
         <div>
             <div className="gnb">
-                <Badge className="label" color="primary">VoicePitch YT</Badge>
+            <Navbar className="nav" light>
+                <NavbarBrand className="brand" href="/">VoicePitch YT</NavbarBrand>
+                <NavbarText>Simple Text</NavbarText>
+            </Navbar>
+            <div className="profile" style={{float: "right", backgroundColor: "Red"}}>
+                <p>Github</p>
+            </div>
             </div>
         </div>
     );

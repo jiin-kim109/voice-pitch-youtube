@@ -1,17 +1,18 @@
 import React, {Component} from 'react';
 import Gnb from '../components/Gnb';
-import Monitor from '../components/Monitor';
+import Monitor from './Monitor';
+import YoutubeDisplay from './YoutubeDisplay';
 
 class Main extends Component{
     render(){
         return(
-            <div>
+            <div id="main">
                 <Gnb />
-                <div className="bg_layout">
-                    <div className="cell">
-                        <p>aaa</p>
+                <div className="body_layout">
+                    <div className="col_1">
+                        <YoutubeDisplay />
                     </div>
-                    <div className="cell">
+                    <div className="col_2">
                         <Monitor />
                     </div>
                 </div>
