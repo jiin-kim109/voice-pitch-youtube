@@ -4,15 +4,24 @@ import Monitor from './Monitor';
 import YoutubeDisplay from './YoutubeDisplay';
 
 class Main extends Component{
+    state = {
+        video_id: "",
+    }
+    onSearchVideo(id){
+        this.setState({
+            video_id: id,
+        });
+    }
     render(){
         return(
             <div id="main">
-                <Gnb />
+                <Gnb onSearchVideo={id => this.onSearchVideo(id)}/>
                 <div className="body_layout">
-                    <div className="col_1">
-                        <YoutubeDisplay />
+                    <div className="audio">
+                        <YoutubeDisplay video_id={this.state.video_id}/>
+                        <h4>Or<br/>Search on Youtube...</h4>
                     </div>
-                    <div className="col_2">
+                    <div className="monitor">
                         <Monitor />
                     </div>
                 </div>

@@ -1,53 +1,53 @@
 @import '../../node_modules/react-vis/dist/style.css';
 
 #main {
-    background-color: lightgrey;
+    background-color: #f0f2f2;
     height: 100vh;
 }
 
-.gnb {
+.nav{
+    display: table;
+    width: 100%;
     background-color: white;
     color: black;
 }
-.gnb .nav{
-    display: inline-block;
+.nav .brand{
+    display: table-cell;
+    float: left;
+    font-size: 25px;
+    width: 180px;
 }
-.gnb .brand{
-    font-size: 30px;
+.nav .searchBar{
+    display: table-cell;
+    width: 60%;
+    float: left;
 }
-.profile{
-    
+.nav .profile{
+    display: table-cell;
+    float: right;
+    width: 100px;
 }
 
 .body_layout {
     display: inline-block;
-    padding-top: 30px;
     width: 100%;
-    border: blue solid 2px;
+    height: 450px;
+    padding-top: 30px;
+    border: 2px solid pink;
 }
-.body_layout .col_1 {
-    float: left;
+.body_layout .audio{
     width: 60%;
-    text-align: center;
-    border: red solid 1px;
-}
-.body_layout .col_2 {
     float: left;
+}
+.body_layout .monitor{
     width: 40%;
-    text-align: center;
-    border: red solid 1px;
+    float: left;
 }
 
-.youtube{
-    height: 450px;
-    margin: 0px 20px 0px 30px;
-    border: black solid 1px;
-}
-.search{
-    margin: 15px 100px 10px 100px;
+.display{
+
 }
 
 .chart{
-    width: 100%;
-    padding: 0px 100px 0px 100px;
+    
 }

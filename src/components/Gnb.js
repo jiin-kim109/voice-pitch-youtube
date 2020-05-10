@@ -1,23 +1,27 @@
-import React from 'react';
+import React, {Component} from 'react';
+import VideoSearch from './VideoSearch';
+
 import {
     Navbar,
-    NavbarBrand,
-    NavbarText,
+    Badge,
+    NavItem,
 } from 'reactstrap';
 
-const Gnb = (props) => {
-    return(
-        <div>
-            <div className="gnb">
-            <Navbar className="nav" light>
-                <NavbarBrand className="brand" href="/">VoicePitch YT</NavbarBrand>
-                <NavbarText>Simple Text</NavbarText>
-            </Navbar>
-            <div className="profile" style={{float: "right", backgroundColor: "Red"}}>
-                <p>Github</p>
+class Gnb extends Component{
+    render(){
+        return(
+            <div>
+                <Navbar className="nav" light>
+                    <Badge className="brand" color="success" href="/">VoicePitch YT</Badge>
+                    <NavItem className="searchBar">
+                        <VideoSearch onSearchVideo={id => this.props.onSearchVideo(id)}/>
+                    </NavItem>
+                    <div className="profile">
+                        <p>Github</p>
+                    </div>
+                </Navbar>
             </div>
-            </div>
-        </div>
-    );
+        );
+    }
 }
 export default Gnb;

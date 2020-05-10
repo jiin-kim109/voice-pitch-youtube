@@ -37,11 +37,11 @@ class VideoSearch extends Component {
 
     render (){
         return(
-            <div className="search">
+            <div>
                 <InputGroup>
                     <Input onChange={this.onInputChange} placeholder="URL or video ID..." />
                     <InputGroupAddon addonType="append">
-                        <Button onClick={this.onSearchEvent} color="success">Search</Button>
+                        <Button onClick={this.onSearchEvent} color="info">Search</Button>
                     </InputGroupAddon>
                 </InputGroup>
             </div>
