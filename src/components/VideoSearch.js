@@ -39,7 +39,7 @@ class VideoSearch extends Component {
         return(
             <div>
                 <InputGroup>
-                    <Input onChange={this.onInputChange} placeholder="URL or video ID..." />
+                    <Input onChange={this.onInputChange} placeholder="keywords..." />
                     <InputGroupAddon addonType="append">
                         <Button onClick={this.onSearchEvent} color="info">Search</Button>
                     </InputGroupAddon>

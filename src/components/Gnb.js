@@ -1,25 +1,15 @@
 import React, {Component} from 'react';
-import VideoSearch from './VideoSearch';
-
-import {
-    Navbar,
-    Badge,
-    NavItem,
-} from 'reactstrap';
 
 class Gnb extends Component{
     render(){
         return(
-            <div>
-                <Navbar className="nav" light>
-                    <Badge className="brand" color="success" href="/">VoicePitch YT</Badge>
-                    <NavItem className="searchBar">
-                        <VideoSearch onSearchVideo={id => this.props.onSearchVideo(id)}/>
-                    </NavItem>
-                    <div className="profile">
-                        <p>Github</p>
-                    </div>
-                </Navbar>
+            <div className="gnb">
+                <h4 className="title">
+                    VoicePitch-YT
+                </h4>
+                <div className="profile">
+                    <p>Github</p>
+                </div>
             </div>
         );
     }

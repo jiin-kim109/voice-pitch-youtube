@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import pitchAnalyser from 'pitch-analyser';
 
 import {
-    FlexibleWidthXYPlot,
+    FlexibleXYPlot,
     LineSeries,
     HorizontalGridLines,
 } from 'react-vis';
@@ -16,14 +16,13 @@ Math.between = function(r1, r2, n){
 }
 
 const chart_opts = {
-    height: 500,
     xDomain: [0, 300],
     xLengthMaximum: 1000,
     yDomain: [0, 500],
     ySize: () => { return this.yDomain[1] - this.yDomain[0] },
     yDomainMargin: 50,
     yLerpTime: 1,
-    noiseFreqDiff: 70,
+    noiseFreqDiff: 150,
 };
 
 class Chart extends Component{
@@ -83,9 +82,8 @@ class Chart extends Component{
     }
     render(){
         return(
-            <div>
-                <FlexibleWidthXYPlot 
-                    height={chart_opts.height}
+            <div className="chart">
+                <FlexibleXYPlot 
                     xDomain={this.xDomain}
                     yDomain={this.yDomain}
                     style={{backgroundColor: "black"}}
@@ -98,7 +96,7 @@ class Chart extends Component{
                     getNull={(d) => d.y !== null}
                   />
                   <HorizontalGridLines/>
-                </FlexibleWidthXYPlot>
+                </FlexibleXYPlot>
                 <Card>
                     <CardTitle>{this.state.note}</CardTitle>
                     <CardText>{this.state.frequency}</CardText>
