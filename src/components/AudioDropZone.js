@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {useDropzone} from 'react-dropzone';
 
 const baseStyle = {
@@ -32,7 +32,7 @@ const rejectStyle = {
 };
 
 function AudioDropZone(props){
-    const onDrop = useCallback(file => props.onDrop(file));
+    const onDrop = file => props.onDrop(file);
     const {
         getRootProps, 
         getInputProps,

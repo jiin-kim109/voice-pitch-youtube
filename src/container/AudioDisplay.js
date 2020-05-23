@@ -1,29 +1,17 @@
 import React, {Component} from 'react';
 import AudioDropZone from '../components/AudioDropZone';
+import * as actions from '../redux/modules/audioSetter';
+import { connect } from 'react-redux';
 
 class AudioDisplay extends Component{
-
     constructor(props){
         super(props);
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        this.state = { audio: null, duration: 0, };
+        this.state = ({ mode: "none"} )
     }
 
     onAudioDropped(file){
         let reader = new FileReader();
-        reader.addEventListener('load', e => {
-            this.audioCtx.decodeAudioData(e.target.result, buffer => {
-                let source = this.audioCtx.createBufferSource();
-                source.buffer = buffer;
-                source.connect(this.audioCtx.destination);
-                source.start(0);
-    
-                this.setState({
-                    audio: source,
-                    duration: buffer.duration,
-                });
-            });
-        });
+        reader.addEventListener('load', e => this.props.setLocalAudioBuffer(e.target.result));
         reader.readAsArrayBuffer(file[0]);
     }
 
@@ -31,15 +19,15 @@ class AudioDisplay extends Component{
         return(
             <div className="audio">
                 {
-                    this.state.audio === null
-                    ? <AudioDropZone onDrop={file => this.onAudioDropped(file)}/>
-                    : (<audio controls>
-                        <source src={this.state.audio} type="audio/mpeg"/>
-                        Your browser does not support the audio element.
-                       </audio>)
+                    this.state.mode === "none"
+                    && <AudioDropZone onDrop={file => this.onAudioDropped(file)}/>
                 }
             </div>
         );
     }
 }
-export default AudioDisplay;
+
+const mapDispatchToProps = dispatch => ({
+    setLocalAudioBuffer: arrayBuffer => dispatch(actions.setLocalAudioBuffer(arrayBuffer)),
+});
+export default connect(null, mapDispatchToProps)(AudioDisplay);

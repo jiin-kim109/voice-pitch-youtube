@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Gnb from '../components/Gnb';
 import Monitor from './Monitor';
-import AudioDisplay from '././AudioDisplay';
+import AudioDisplay from './AudioDisplay';
 import VideoSearch from '../components/VideoSearch';
 
 class Main extends Component{

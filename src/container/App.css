@@ -53,8 +53,19 @@
     margin-top: 25px;
 }
 
+.monitor {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: black;
+}
 .chart {
-    height: 340px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border: 5px solid orchid
 }
 
 .youtube_search{

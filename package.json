@@ -8,16 +8,19 @@
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.0.0-alpha.6",
     "dotenv": "^8.2.0",
-    "pitch-analyser": "^1.0.0",
+    "i": "^0.3.6",
+    "pitchy": "^2.0.0-alpha.1",
     "react": "^16.13.1",
     "react-addons-css-transition-group": "^15.6.2",
     "react-addons-transition-group": "^15.6.2",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
+    "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-vis": "^1.11.7",
-    "reactstrap": "^8.4.1"
+    "reactstrap": "^8.4.1",
+    "redux": "^4.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
