@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import {
     FlexibleXYPlot,
@@ -12,33 +12,30 @@ Math.between = function(r1, r2, n){
 }
 
 const chartOpts = {
-    xDomainSize: 500,
+    xDomainSize: 100,
     yDomain: [100, 800],
 };
 
-class ChartStream extends Component{
-    render(){
-        const data = this.props.data;
-        const currentTick = this.props.currentTick;
-        const xDomain = [currentTick - chartOpts.xDomainSize, currentTick];
-        const yDomain = chartOpts.yDomain;
-
-        return(
-            <div className="chart">
-                <FlexibleXYPlot 
-                    xDomain={xDomain}
-                    yDomain={yDomain}
-                  >
-                  <LineSeries 
-                    data={data}
-                    strokeStyle={"solid"}
-                    stroke={this.props.color}
-                    curve={'curveMonotoneX'}
-                  />
-                  <HorizontalGridLines/>
-                </FlexibleXYPlot>
-            </div>
-        );
-    }
+function ChartStream(props) {
+    const data = props.data;
+    const xEnd = data[data.length-1].x;
+    const xDomain = [xEnd - chartOpts.xDomainSize, xEnd];
+    const yDomain = chartOpts.yDomain;
+    return(
+        <div className="chart">
+            <FlexibleXYPlot 
+                xDomain={xDomain}
+                yDomain={yDomain}
+              >
+              <LineSeries 
+                data={data}
+                strokeStyle={"solid"}
+                stroke={props.color}
+                curve={'curveMonotoneX'}
+              />
+              <HorizontalGridLines/>
+            </FlexibleXYPlot>
+        </div>
+    );
 }
 export default ChartStream;

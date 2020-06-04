@@ -2,41 +2,67 @@ import React, {Component} from 'react';
 import ChartStream from '../components/ChartStream';
 import { connect } from 'react-redux';
 import { PitchDetector } from 'pitchy';
+import isDeepEqual from "react-fast-compare";
+
+const TICK_INTERVAL = 50;
+const DATA_MEMORY_LIMIT = 2000;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const MemoChartStream = React.memo(props => <ChartStream {...props} />, isDeepEqual);
 
 class Monitor extends Component{
   constructor(props){
     super(props);
-    this.state = { 
-      currentTick: 0, 
+    this.state = {
+      userData: [{x: -1, y: -1}],
+      localData: [{x: -1, y: -1}],
     };
 
-    this.userAudio = {
+    this.audioStreams = [];
+    this.audioStreams["user"] = {
       analyser: audioCtx.createAnalyser(),
       nodes: [],
-      history: [{x: -1, y: -1}],
     };
-    this.localAudio = {
+    this.audioStreams["local"] = {
       analyser: audioCtx.createAnalyser(),
       nodes: [],
       arrayBuffer: null,
-      history: [{x: -1, y: -1}],
     };
+    this.tick = 0;
   }
 
-  _createUserAudioAnalyser(stream){
-    const analyser = this.userAudio.analyser;
-    const source = audioCtx.createMediaStreamSource(stream);
+  componentDidMount(){
+    navigator.getUserMedia({audio:true}, 
+      stream => {
+        this._createUserStream(stream);
+      }, e => alert('Error capturing audio.')
+    );
+    this._createLocalStream();
+
+    this.t = setInterval(() => {this.tick++}, TICK_INTERVAL);
+  }
+
+  componentWillUnmount(){
+    this.audioStreams["user"].nodes.forEach(node => node.disconnect());
+    this.audioStreams["user"].analyser.disconnect();
+    this.audioStreams["local"].nodes.forEach(node => node.disconnect());
+    this.audioStreams["local"].analyser.disconnect();
+    audioCtx.close();
+    clearInterval(this.t);
+  }
+
+  _createUserStream(media){
+    const analyser = this.audioStreams["user"].analyser;
+    const source = audioCtx.createMediaStreamSource(media);
     const node = audioCtx.createScriptProcessor();
     source.connect(analyser);
     analyser.connect(node);
     node.connect(audioCtx.destination);
 
-    this.userAudio = {
-      ...this.userAudio,
+    this.audioStreams["user"] = {
+      ...this.audioStreams["user"],
       analyser: analyser,
-      nodes: [...this.userAudio.nodes, source, node],
+      nodes: [...this.audioStreams["user"].nodes, source, node],
     }
 
     // keep track of user mic frequencies
@@ -44,64 +70,57 @@ class Monitor extends Component{
     let input = new Float32Array(detector.inputLength);
 
     node.onaudioprocess = () => {
-      this.userAudio.history[this.state.currentTick] = 
-      { x: this.state.currentTick, 
+      let userData = this.state.userData.concat({
+        x: this.tick, 
         y: this._getPitch(analyser, detector, input),
-      };
+      });
+      if(userData.length > DATA_MEMORY_LIMIT) userData.splice(0, 1);
       this.setState({
-        currentTick: this.state.currentTick+1,
+        userData: userData
       });
     };
   }
 
-  _createLocalAudioAnalyser(){
-    const analyser = this.localAudio.analyser;
-    this.localAudio.analyser = analyser;
+  _createLocalStream(){
+    const analyser = this.audioStreams["local"].analyser;
+    this.audioStreams["local"].analyser = analyser;
 
     const detector = PitchDetector.forFloat32Array(analyser.fftSize);
     let input = new Float32Array(detector.inputLength);
 
     // keep track of local audio frequencies
-    let getLocalAudioPitch = (analyser, detector, input, sampleRate) => {
-      this.localAudio.history[this.state.currentTick] = 
-      { x: this.state.currentTick, 
-        y: this._getPitch(analyser, detector, input),
+    let getLocalAudioPitch = (analyser, detector, input) => {
+      if(this.audioStreams["local"].arrayBuffer !== null) {
+        let localData = this.state.localData.concat({
+          x: this.tick,
+          y: this._getPitch(analyser, detector, input),         
+        });
+        if(localData.length > DATA_MEMORY_LIMIT) localData.splice(0,1);
+        this.setState({
+          localData: localData,
+        });
       }
-      window.requestAnimationFrame(() => getLocalAudioPitch(analyser, detector, input, audioCtx.sampleRate));
+      window.requestAnimationFrame(() => getLocalAudioPitch(analyser, detector, input));
     }
-    window.requestAnimationFrame(() => getLocalAudioPitch(analyser, detector, input, audioCtx.sampleRate));
+    window.requestAnimationFrame(() => getLocalAudioPitch(analyser, detector, input));
   }
 
   _setLocalAudioSource(audioBuffer){
-    const analyser = this.localAudio.analyser;
-    this.localAudio.arrayBuffer = audioBuffer;
-    this.localAudio.nodes.forEach(node => node.disconnect());
+    const analyser = this.audioStreams["local"].analyser;
+    this.audioStreams["local"].arrayBuffer = audioBuffer;
+    this.audioStreams["local"].nodes.forEach(node => node.disconnect());
 
-    audioCtx.decodeAudioData(audioBuffer, buffer => {
-      // create source from the file
-      const source = audioCtx.createBufferSource();
-      source.buffer = buffer;
-      source.loop = true;
-      source.start(0);
+    const blob = new Blob([audioBuffer], { type: "audio/wav" });
+    const url = window.URL.createObjectURL(blob);
+    const audioElem = new Audio();
+    audioElem.controls = true;
+    audioElem.src = url;
+    audioElem.id = "audioFileSource";
+    document.getElementsByClassName("audio")[0].appendChild(audioElem);
 
-      // create stream node
-      const streamNode = audioCtx.createMediaStreamDestination();
-      source.connect(analyser);
-      analyser.connect(streamNode);
-
-      // attach stream node to audio element
-      const audioElem = new Audio();
-      audioElem.controls = true;
-      audioElem.srcObject = streamNode.stream;
-      audioElem.id = "audioFileSource";
-      document.getElementsByClassName("audio")[0].appendChild(audioElem);
-
-      this.localAudio = {
-        ...this.localAudio,
-        analyser: analyser,
-        nodes: [...this.localAudio.nodes, source],
-      }
-    });
+    const source = audioCtx.createMediaElementSource(audioElem);
+    source.connect(analyser);
+    source.connect(audioCtx.destination);
   }
 
   _getPitch(analyser, detector, input){
@@ -110,32 +129,15 @@ class Monitor extends Component{
     return parseFloat(pitch);
   }
 
-  componentDidMount(){
-    navigator.getUserMedia({audio:true}, 
-      stream => {
-        this._createUserAudioAnalyser(stream);
-      }, e => alert('Error capturing audio.')
-    );
-    this._createLocalAudioAnalyser();
-  }
-
-  componentWillUnmount(){
-    
-    this.userAudio.nodes.forEach(node => node.disconnect());
-    this.userAudio.analyser.disconnect();
-    this.localAudio.nodes.forEach(node => node.disconnect());
-    this.localAudio.analyser.disconnect();
-    audioCtx.close();
-  }
-
   render(){
-    if(this.localAudio.arrayBuffer !== this.props.localAudioBuffer)
+    if(this.props.localAudioBuffer
+        && this.props.localAudioBuffer !== this.audioStreams["local"].arrayBuffer) 
       this._setLocalAudioSource(this.props.localAudioBuffer);
     return (
       <div>
         <div className="monitor">
-          <ChartStream data={this.localAudio.history} currentTick={this.state.currentTick} color="#ff00ff" key={0}/>  
-          <ChartStream data={this.userAudio.history} currentTick={this.state.currentTick} color="#0000ff" key={1}/>
+          <MemoChartStream data={this.state.localData} color="#ff00ff" key={0}/>  
+          <MemoChartStream data={this.state.userData} color="#0000ff" key={1}/>
         </div>
       </div>  
     );
