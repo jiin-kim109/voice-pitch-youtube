@@ -3,7 +3,6 @@ import React from 'react';
 import {
     FlexibleXYPlot,
     LineSeries,
-    HorizontalGridLines,
 } from 'react-vis';
 
 Math.between = function(r1, r2, n){
@@ -12,15 +11,14 @@ Math.between = function(r1, r2, n){
 }
 
 const chartOpts = {
-    xDomainSize: 100,
-    yDomain: [100, 800],
+    xSize: 200,
 };
 
 function ChartStream(props) {
     const data = props.data;
     const xEnd = data[data.length-1].x;
-    const xDomain = [xEnd - chartOpts.xDomainSize, xEnd];
-    const yDomain = chartOpts.yDomain;
+    const xDomain = [xEnd - chartOpts.xSize, xEnd];
+    const yDomain = props.yDomain;
     return(
         <div className="chart">
             <FlexibleXYPlot 
@@ -32,8 +30,9 @@ function ChartStream(props) {
                 strokeStyle={"solid"}
                 stroke={props.color}
                 curve={'curveMonotoneX'}
+                getNull={(d) => d.y !== null}
               />
-              <HorizontalGridLines/>
+              
             </FlexibleXYPlot>
         </div>
     );

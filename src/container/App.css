@@ -30,12 +30,10 @@
 .body_layout {
     display: inline-block;
     width: 100%;
-    padding-top: 30px;
-    border: 2px solid pink;
+    padding: 30px 60px 0px 60px;
 }
 .body_layout .col1{
     width: 50%;
-    padding-left: 40px;
     float: left;
 }
 .body_layout .col2{
@@ -56,24 +54,70 @@
 .monitor {
     position: relative;
     width: 100%;
-    height: 400px;
+    height: 320px;
     background: black;
 }
+.properties{
+    color: white;
+}
+.properties .note{
+    position: absolute;
+    left: 47%; 
+    right: 53%;
+    top: 3px;
+}
+.properties .freq{
+    position: absolute;
+    left: 5px;
+}
+
 .chart {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    border: 5px solid orchid
 }
 
-.youtube_search{
+.settings {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    height: 80px;
+    text-align: center;
+    background-color: black;
+    border-top: white 1px solid;
+    color: white;
+}
+.settings > *{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.yt_tool {
+    padding-top: 40px;
+}
+
+.yt_tool .searchBar{
     width: 450px;
-    border: 2px solid orange;
 }
 
-.youtube_list{
-    height: 200px;
-    border: 2px solid palegreen;
+.yt_list{
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+.yt_list > *{
+    display: table-cell;
+    vertical-align: top;
+}
+.yt_list .thumbnail{
+    height: 130px;
+}
+.yt_list .title{
+    font-size: 15px;
+    margin-top: 5px;
+    padding: 0px 5px 0px 5px;
 }

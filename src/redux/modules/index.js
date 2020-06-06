@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
-import setter from './audioSetter';
+import audio from './audioSetter';
+import youtube from './youtubeResults';
 
 export default combineReducers({
-    setter,
+    audio, youtube
 });

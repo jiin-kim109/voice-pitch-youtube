@@ -9,6 +9,7 @@
     "bootstrap": "^4.0.0-alpha.6",
     "dotenv": "^8.2.0",
     "i": "^0.3.6",
+    "note-frequency-map": "0.0.7",
     "pitchy": "^2.0.0-alpha.1",
     "react": "^16.13.1",
     "react-addons-css-transition-group": "^15.6.2",
@@ -21,7 +22,8 @@
     "react-scripts": "3.4.0",
     "react-vis": "^1.11.7",
     "reactstrap": "^8.4.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "youtube-search": "^1.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

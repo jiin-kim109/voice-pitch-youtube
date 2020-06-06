@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import search from 'youtube-search';
+import * as actions from '../redux/modules/youtubeResults';
+import { connect } from 'react-redux';
 
 import {
     InputGroup,
@@ -7,45 +10,47 @@ import {
     Button,
 } from 'reactstrap';
 
+const API_KEY = "AIzaSyDTHIethDZcFhKJjcpYzwbBFXjS2p6zBJY";
+const MAX_RESULTS = 7;
+
+const opts = {
+    maxResults: MAX_RESULTS,
+    key: API_KEY,
+    type: "video",
+}
+
 class VideoSearch extends Component {
     constructor(props){
         super(props);
-
-        this.state = { video_id: "" }
-        this.onInputChange = this.onInputChange.bind(this);
-        this.onSearchEvent = this.onSearchEvent.bind(this);
+        this.state = { pageToken: "1" }
+        this.keyword = "";
     }
-    onInputChange(event){
-        let input = JSON.stringify(event.target.value);
-        if(input.includes("?v=")){
-            let regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
-            let id = input.match(regExp);
-            id[1] = id[1].replace("\"", "");
-            this.setState({
-                video_id: id[1],
-            });
-        }
-        else{
-            this.setState({
-                video_id: input,
-            });
-        }
+    componentDidMount(){
+        search("best music", opts, (error, results) => {this.props.setSearchResults(results)});
     }
-    onSearchEvent(){
-        this.props.onSearchVideo(this.state.video_id);
+    searchKeyword = () => {
+        let options = opts;
+        //pageToken
+        search(this.keyword, options, (error, results) => {
+            if(error) console.log(error);
+            else this.props.setSearchResults(results);
+        });
     }
 
     render (){
         return(
             <div>
                 <InputGroup>
-                    <Input onChange={this.onInputChange} placeholder="keywords..." />
+                    <Input placeholder="keywords..." onChange={event => {this.keyword = event.target.value}}/>
                     <InputGroupAddon addonType="append">
-                        <Button onClick={this.onSearchEvent} color="info">Search</Button>
+                        <Button onClick={this.searchKeyword} color="info">Search</Button>
                     </InputGroupAddon>
                 </InputGroup>
             </div>
         );
     };
 };
-export default VideoSearch;
+const mapDispatchToProps = dispatch => ({
+    setSearchResults: results => dispatch(actions.setSearchResults(results)),
+});
+export default connect(null, mapDispatchToProps)(VideoSearch);

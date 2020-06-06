@@ -7,7 +7,7 @@ const initialState = {
     localAudioBuffer: null,
 };
 
-export default function setter(state = initialState, action){
+export default function audio(state = initialState, action){
     switch(action.type){
         case SET_LOCAL_AUDIO_BUFFER:
             return {
