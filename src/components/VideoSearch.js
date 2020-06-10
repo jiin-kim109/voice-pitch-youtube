@@ -22,30 +22,39 @@ const opts = {
 class VideoSearch extends Component {
     constructor(props){
         super(props);
-        this.state = { pageToken: "1" }
-        this.keyword = "";
+        this.state = { lastKeywords: "", nextPageToken: null }
+        this.keywords = "";
     }
     componentDidMount(){
-        search("best music", opts, (error, results) => {this.props.setSearchResults(results)});
+        //search("best music", opts, (error, results) => {this.props.setSearchResults(results)});
     }
-    searchKeyword = () => {
+    searchKeywords = (event, pageToken=null) => {
         let options = opts;
-        //pageToken
-        search(this.keyword, options, (error, results) => {
+        options.pageToken = pageToken;
+        const keywords = pageToken ? this.state.lastKeywords : this.keywords;
+        search(this.keywords, options, (error, results) => {
             if(error) console.log(error);
-            else this.props.setSearchResults(results);
+            else {
+                this.props.setSearchResults(results);
+                this.setState({ lastKeywords: keywords, nextPageToken: results.nextPageToken });
+            }
         });
     }
 
     render (){
         return(
-            <div>
-                <InputGroup>
-                    <Input placeholder="keywords..." onChange={event => {this.keyword = event.target.value}}/>
+            <div style={{display: 'inline-block', width: '100%'}}>
+                <InputGroup style={{float: 'left', width: '400px'}}>
+                    <Input placeholder="keywords..." onChange={event => {this.keywords = event.target.value}}/>
                     <InputGroupAddon addonType="append">
-                        <Button onClick={this.searchKeyword} color="info">Search</Button>
+                        <Button onClick={event => this.searchKeywords(event)} color="info">Search</Button>
                     </InputGroupAddon>
                 </InputGroup>
+                <Button outline disabled={this.state.nextPageToken === null ? true:false} color="primary" 
+                        style={{marginLeft: '20px'}}
+                        onClick={event => this.searchKeywords(event, this.state.nextPageToken)}>
+                    More Videos...
+                </Button>
             </div>
         );
     };

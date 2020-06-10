@@ -5,9 +5,12 @@ import { PitchDetector } from 'pitchy';
 import isDeepEqual from "react-fast-compare";
 import FrequencyMap from 'note-frequency-map';
 
-const TICK_INTERVAL = 40;
+const DEFAULT_FRAME_RATE = 40;
+const FRAME_CHANGE_UNIT = 10;
+const DEFAULT_VOLUME_MIN_FILTER_VALUE = 7;
+const VOLUME_MIN_CHANGE_UNIT = 1;
+
 const DATA_MEMORY_LIMIT = 2000;
-const VOLUME_MIN_FILTER_VALUE = 7;
 const MAX_FREQUENCY_RANGE = 1500;
 const FREQUENCY_RANGE_INTERVAL = 100;
 
@@ -21,6 +24,8 @@ class Monitor extends Component{
       userData: [{x: -1, y: -1}],
       localData: [{x: -1, y: -1}],
       yDomain: [FREQUENCY_RANGE_INTERVAL, FREQUENCY_RANGE_INTERVAL*2],
+      frameRate: DEFAULT_FRAME_RATE,
+      noiseFilter: DEFAULT_VOLUME_MIN_FILTER_VALUE,
     };
 
     this.audioStreams = [];
@@ -44,7 +49,7 @@ class Monitor extends Component{
     );
     this._createLocalStream();
 
-    this.t = setInterval(() => {this.tick++}, TICK_INTERVAL);
+    this.t = setInterval(() => {this.tick++}, this.state.frameRate);
   }
 
   componentWillUnmount(){
@@ -78,7 +83,7 @@ class Monitor extends Component{
 
     node.onaudioprocess = () => {
       analyser.getByteFrequencyData(array);
-      if(this._getVolume(array) < VOLUME_MIN_FILTER_VALUE) 
+      if(this._getVolume(array) < this.state.noiseFilter) 
         pitch = null;
       else
         pitch = this._getPitch(analyser, detector, input);
@@ -107,7 +112,7 @@ class Monitor extends Component{
     let getLocalAudioPitch = (analyser, detector, input) => {
       if(this.audioStreams["local"].arrayBuffer !== null) {
         analyser.getByteFrequencyData(array);
-        if(this._getVolume(array) < VOLUME_MIN_FILTER_VALUE) 
+        if(this._getVolume(array) < this.state.noiseFilter) 
           pitch = null;
         else
           pitch = this._getPitch(analyser, detector, input);
@@ -179,9 +184,10 @@ class Monitor extends Component{
           <MemoChartStream data={this.state.localData} color="#ff00ff" key={0} yDomain={this.state.yDomain}/>  
           <MemoChartStream data={this.state.userData} color="#0000ff" key={1} yDomain={this.state.yDomain}/>
         </div>
+
         <div className="settings">
           <div className="zoom">
-            <h5>Frequency Range</h5>
+            <h5>Frequency Zoom</h5>
             <select value={this.state.yDomain[0]} onChange={event => {
               const bottom = parseInt(event.target.value);
               const top = this.state.yDomain[1] < bottom ? bottom+FREQUENCY_RANGE_INTERVAL : this.state.yDomain[1];
@@ -207,13 +213,35 @@ class Monitor extends Component{
               )
             }</select>
           </div>
-          <div className="frame">
-            <h5>Frame</h5>
-            <button>-</button><a>1</a><button>+</button>
-          </div>
+
           <div className="filter">
-            <h5>Filter  </h5>
-            <button>-</button><a>1</a><button>+</button>
+            <h5>Noise Filter</h5>
+            <button onClick={() => {
+              const filter = Math.max(this.state.noiseFilter - VOLUME_MIN_CHANGE_UNIT, 0); 
+              this.setState({ noiseFilter: filter });
+            }}>-</button>
+              <a> {this.state.noiseFilter} </a>
+            <button onClick={() => {
+              const filter = this.state.noiseFilter + VOLUME_MIN_CHANGE_UNIT 
+              this.setState({ noiseFilter: filter });
+            }}>+</button>
+          </div>
+
+          <div className="frame">
+            <h5>Frame Rate</h5>
+            <button onClick={() => {
+              clearInterval(this.t);
+              const rate = this.state.frameRate + FRAME_CHANGE_UNIT;
+              this.setState({ frameRate: rate }
+                , () => this.t = setInterval(() => {this.tick++}, this.state.frameRate));
+            }}>+</button>
+              <a> {this.state.frameRate} </a>
+            <button onClick={() => {
+              clearInterval(this.t);
+              const rate = Math.max(this.state.frameRate-FRAME_CHANGE_UNIT, 10);
+              this.setState({ frameRate: rate }
+                , () => this.t = setInterval(() => {this.tick++}, this.state.frameRate));
+            }}>-</button>
           </div>
         </div>
       </div>  

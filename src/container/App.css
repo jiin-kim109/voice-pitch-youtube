@@ -93,13 +93,16 @@
     display: table-cell;
     vertical-align: middle;
 }
+.settings button {
+    width: 30px;
+}
 
 .yt_tool {
     padding-top: 40px;
 }
 
 .yt_tool .searchBar{
-    width: 450px;
+    width: 100%;
 }
 
 .yt_list{
@@ -112,6 +115,9 @@
 .yt_list > *{
     display: table-cell;
     vertical-align: top;
+}
+.yt_list .selected {
+    border: 2px solid red;
 }
 .yt_list .thumbnail{
     height: 130px;
