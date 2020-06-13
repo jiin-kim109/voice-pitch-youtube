@@ -7,9 +7,9 @@ class Gnb extends Component{
                 <h4 className="title">
                     VoicePitch-YT
                 </h4>
-                <div className="profile">
-                    <p>Github</p>
-                </div>
+                <a className="profile" href="https://github.com/jiin-kim109/voice-pitch-youtube" target="_blank" rel="noopener noreferrer">
+                    <i class="fa fa-github" style={{fontSize: "36px"}}></i>
+                </a>
             </div>
         );
     }

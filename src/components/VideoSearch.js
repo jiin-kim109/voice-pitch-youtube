@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import search from 'youtube-search';
-import * as actions from '../redux/modules/youtubeResults';
+import * as actions from '../redux/modules/youtubeController';
 import { connect } from 'react-redux';
 
 import {
@@ -17,6 +17,7 @@ const opts = {
     maxResults: MAX_RESULTS,
     key: API_KEY,
     type: "video",
+    videoDuration: "short",
 }
 
 class VideoSearch extends Component {
@@ -26,12 +27,13 @@ class VideoSearch extends Component {
         this.keywords = "";
     }
     componentDidMount(){
-        //search("best music", opts, (error, results) => {this.props.setSearchResults(results)});
+        search("best music", opts, (error, results) => {this.props.setSearchResults(results)});
     }
     searchKeywords = (event, pageToken=null) => {
         let options = opts;
         options.pageToken = pageToken;
         const keywords = pageToken ? this.state.lastKeywords : this.keywords;
+        this.props.setSearchResults(null);
         search(this.keywords, options, (error, results) => {
             if(error) console.log(error);
             else {

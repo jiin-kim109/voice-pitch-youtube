@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../redux/modules/youtubeResults';
+import * as actions from '../redux/modules/youtubeController';
 
 import {
-    Card, CardImg, CardTitle
+    Card, CardImg, CardTitle, Cardtext
 } from 'reactstrap';
 
 class YoutubeList extends Component {
@@ -13,13 +13,13 @@ class YoutubeList extends Component {
     }
 
     selectVideo(idx, result){
-        this.setState({ selected: idx }, this.props.setSelectedVideoId(result.id));
+        this.setState({ selected: idx }, () => this.props.setSelectedVideoId(result.id));
     }
 
     render(){
         return(
             <div className="yt_list">
-                { this.props.results && this.props.results.map((result,idx) => (
+                { this.props.results ? this.props.results.map((result,idx) => (
                     <Card 
                         className={idx === this.state.selected ? 'selected' : ''}
                         onClick={() => this.selectVideo(idx, result)}
@@ -28,7 +28,7 @@ class YoutubeList extends Component {
                         <CardImg className="thumbnail" top width="100%" src={result.thumbnails.default.url} alt=""/>
                         <CardTitle className="title">{result.title}</CardTitle>
                     </Card>                
-                )) }
+                )) : <a>Loading videos from Youtube...</a>}
             </div>
         );
     }

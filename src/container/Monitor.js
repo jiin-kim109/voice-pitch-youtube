@@ -23,7 +23,7 @@ class Monitor extends Component{
     this.state = {
       userData: [{x: -1, y: -1}],
       localData: [{x: -1, y: -1}],
-      yDomain: [FREQUENCY_RANGE_INTERVAL, FREQUENCY_RANGE_INTERVAL*2],
+      yDomain: [FREQUENCY_RANGE_INTERVAL, parseInt(MAX_FREQUENCY_RANGE/FREQUENCY_RANGE_INTERVAL/2)*FREQUENCY_RANGE_INTERVAL],
       frameRate: DEFAULT_FRAME_RATE,
       noiseFilter: DEFAULT_VOLUME_MIN_FILTER_VALUE,
     };
@@ -39,16 +39,27 @@ class Monitor extends Component{
       arrayBuffer: null,
     };
     this.tick = 0;
+    this.status = "ab";
   }
 
   componentDidMount(){
     navigator.getUserMedia({audio:true}, 
       stream => {
+        this.status = this.status.replace('a', '');
+        this.status = this.status.concat('c');
         this._createUserStream(stream);
-      }, e => alert('Error capturing audio.')
+      }, e => alert('Error capturing an audio input device.')
     );
     this._createLocalStream();
 
+    this.resumeCtx = setInterval(() => {
+      if(audioCtx.state !== "running")
+        audioCtx.resume();
+      else{
+        this.status = this.status.replace('b', '');
+        clearInterval(this.resumeCtx);
+      }
+    }, 3000);
     this.t = setInterval(() => {this.tick++}, this.state.frameRate);
   }
 
@@ -141,8 +152,12 @@ class Monitor extends Component{
     const audioElem = new Audio();
     audioElem.controls = true;
     audioElem.src = url;
-    audioElem.id = "audioFileSource";
-    document.getElementsByClassName("audio")[0].appendChild(audioElem);
+    audioElem.id = "audioPlayer";
+    const player = document.getElementById("audioPlayer");
+    if(player){
+      document.getElementsByClassName("player")[0].removeChild(player);
+    }
+    document.getElementsByClassName("player")[0].appendChild(audioElem);
 
     const source = audioCtx.createMediaElementSource(audioElem);
     source.connect(analyser);
@@ -180,8 +195,13 @@ class Monitor extends Component{
           <div className="properties">
             <p className="freq">frequency: {frequency !== null && frequency.toFixed(4)}</p>
             <h3 className="note">{note.name}{note.octave}</h3>
+            <div style={{padding: "20px 0px 0px 5px"}}>
+              { this.status.includes('a') && <a style={{color: "yellow"}}>Capturing an audio input device...<br/></a>}
+              { this.status.includes('b') && <a style={{color: "yellow"}}>Error! Audio context is suspended<br/></a>}
+              { this.status.includes('c') && <a style={{color: "green"}}>Connected user's microphone<br/></a>}
+            </div>
           </div>
-          <MemoChartStream data={this.state.localData} color="#ff00ff" key={0} yDomain={this.state.yDomain}/>  
+          <MemoChartStream data={this.state.localData} color="orange" key={0} yDomain={this.state.yDomain}/>  
           <MemoChartStream data={this.state.userData} color="#0000ff" key={1} yDomain={this.state.yDomain}/>
         </div>
 
