@@ -49,7 +49,7 @@ class AudioDisplay extends Component{
                     && <img src={'https://laptops-drivers.com/wp-content/uploads/2019/09/LK72B_Hero_Banner_Desktop.jpg'} 
                             width="100%" height="100%"/>}
                 {   this.state.mode === "loading"
-                    && <a>Downloading from Youtube<br/>this may take a while, please wait...</a>}
+                    && <a>Downloading from Youtube, please wait...</a>}
                 
                 <div className="player">
                     <Button id="r_file_btn"
