@@ -36,8 +36,8 @@
     "ytdl-core": "^2.1.7"
   },
   "scripts": {
-    "heroku-postbuild": "npm install && npm build",
-    "start": "nodemon ./server/server.js",
+    "heroku-postbuild": "npm install && npm run-script build",
+    "start": "node ./server/server.js",
     "dev": "npm-run-all --parallel dev:**",
     "dev:client": "react-scripts start",
     "dev:server": "nodemon ./server/server.js",
