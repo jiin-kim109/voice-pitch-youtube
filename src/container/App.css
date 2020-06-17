@@ -136,7 +136,7 @@
     vertical-align: top;
 }
 .yt_list .selected {
-    border-left: 4px solid red;
+    border-left: 12px solid lightgreen;
 }
 .yt_list .thumbnail{
     height: 130px;
