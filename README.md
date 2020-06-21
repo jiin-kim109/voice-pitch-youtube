@@ -3,7 +3,7 @@ A web application that displays the musical pitch of a streaming sound from micr
 
 Deployed on Heroku: https://voice-pitch-youtube.herokuapp.com/  
   
-**techniques used:**
+**techniques used:**  
 React  
 Node.js  
 Express.js  
