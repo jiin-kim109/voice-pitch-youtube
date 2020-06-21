@@ -197,8 +197,8 @@ class Monitor extends Component{
             <h3 className="note">{note.name}{note.octave}</h3>
             <div style={{padding: "20px 0px 0px 5px"}}>
               { this.status.includes('a') && <a style={{color: "yellow"}}>Capturing an audio input device...<br/></a>}
-              { this.status.includes('b') && <a style={{color: "yellow"}}>Error! Audio context is suspended<br/></a>}
-              { this.status.includes('c') && <a style={{color: "green"}}>Connected user's microphone<br/></a>}
+              { this.status.includes('b') && <a style={{color: "yellow"}}>Error! Audio context suspended<br/></a>}
+              { this.status.includes('c') && <a style={{color: "green"}}>Connected to user's microphone<br/></a>}
             </div>
           </div>
           <MemoChartStream data={this.state.localData} color="orange" key={0} yDomain={this.state.yDomain}/>  
