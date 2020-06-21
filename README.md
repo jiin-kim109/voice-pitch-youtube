@@ -3,12 +3,12 @@ A web application that displays the musical pitch of a streaming sound from micr
 
 Deployed on Heroku: https://voice-pitch-youtube.herokuapp.com/  
   
-**Feature techniques:**  
+**Techniques Used:**  
 React  
 Node.js  
 Express.js  
-Redux  
-axios   
+Axios  
+Redux     
 Reactstrap, React-vis  
 pitchy  
 ytdl, and related libraries to fetch audio file from Youtube  
